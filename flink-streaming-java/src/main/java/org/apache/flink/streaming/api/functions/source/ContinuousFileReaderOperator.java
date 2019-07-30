@@ -62,7 +62,8 @@ import static org.apache.flink.util.Preconditions.checkState;
  */
 @Internal
 public class ContinuousFileReaderOperator<OUT> extends AbstractStreamOperator<OUT>
-	implements OneInputStreamOperator<TimestampedFileInputSplit, OUT>, OutputTypeConfigurable<OUT>, BoundedOneInput {
+	implements OneInputStreamOperator<TimestampedFileInputSplit, OUT>, OutputTypeConfigurable<OUT>,
+	BoundedOneInput {
 
 	private static final long serialVersionUID = 1L;
 
@@ -196,18 +197,12 @@ public class ContinuousFileReaderOperator<OUT> extends AbstractStreamOperator<OU
 	@Override
 	public void close() throws Exception {
 		super.close();
-
-		waitSplitReaderFinished();
-
+		endInput();
 		output.close();
 	}
 
 	@Override
 	public void endInput() throws Exception {
-		waitSplitReaderFinished();
-	}
-
-	private void waitSplitReaderFinished() throws InterruptedException {
 		// make sure that we hold the checkpointing lock
 		Thread.holdsLock(checkpointLock);
 
@@ -227,7 +222,6 @@ public class ContinuousFileReaderOperator<OUT> extends AbstractStreamOperator<OU
 		if (readerContext != null) {
 			readerContext.emitWatermark(Watermark.MAX_WATERMARK);
 			readerContext.close();
-			readerContext = null;
 		}
 	}
 
