@@ -623,35 +623,23 @@ class TestInputFormatTableSource[T](
   override def getTableSchema: TableSchema = tableSchema
 }
 
-class TestDataTypeTableSource(
+class TestDataTypeTableSource[T](
     tableSchema: TableSchema,
-    values: Seq[Row]) extends InputFormatTableSource[Row] {
+    returnType: DataType,
+    values: Seq[T]) extends InputFormatTableSource[T] {
 
-  override def getInputFormat: InputFormat[Row, _ <: InputSplit] = {
-    new CollectionInputFormat[Row](
+  override def getInputFormat: InputFormat[T, _ <: InputSplit] = {
+    new CollectionInputFormat[T](
       values.asJava,
-      fromDataTypeToTypeInfo(getProducedDataType)
+      fromDataTypeToTypeInfo(returnType)
           .createSerializer(new ExecutionConfig)
-          .asInstanceOf[TypeSerializer[Row]])
+          .asInstanceOf[TypeSerializer[T]])
   }
 
-  override def getReturnType: TypeInformation[Row] =
+  override def getReturnType: TypeInformation[T] =
     throw new RuntimeException("Should not invoke this deprecated method.")
 
-  override def getProducedDataType: DataType = tableSchema.toRowDataType
-
-  override def getTableSchema: TableSchema = tableSchema
-}
-
-class TestStreamTableSource(
-    tableSchema: TableSchema,
-    values: Seq[Row]) extends StreamTableSource[Row] {
-
-  override def getDataStream(execEnv: StreamExecutionEnvironment): DataStream[Row] = {
-    execEnv.fromCollection(values, tableSchema.toRowType)
-  }
-
-  override def getReturnType: TypeInformation[Row] = tableSchema.toRowType
+  override def getProducedDataType: DataType = returnType
 
   override def getTableSchema: TableSchema = tableSchema
 }

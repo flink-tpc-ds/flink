@@ -225,26 +225,24 @@ class TableSourceITCase extends BatchTestBase {
   @Test
   def testDecimalSource(): Unit = {
     val tableSchema = TableSchema.builder().fields(
-      Array("a", "b", "c", "d"),
+      Array("a", "b"),
       Array(
         DataTypes.INT(),
-        DataTypes.DECIMAL(5, 2),
-        DataTypes.VARCHAR(5),
-        DataTypes.CHAR(5))).build()
+        DataTypes.DECIMAL(5, 2))).build()
     val tableSource = new TestDataTypeTableSource(
-      tableSchema,
+      tableSchema, tableSchema.toRowDataType,
       Seq(
-        row(1, new java.math.BigDecimal(5.1), "1", "1"),
-        row(2, new java.math.BigDecimal(6.1), "12", "12"),
-        row(3, new java.math.BigDecimal(7.1), "123", "123")
+        row(1, new java.math.BigDecimal(5.1)),
+        row(2, new java.math.BigDecimal(6.1)),
+        row(3, new java.math.BigDecimal(7.1))
       ))
     tEnv.registerTableSource("MyInputFormatTable", tableSource)
     checkResult(
-      "SELECT a, b, c, d FROM MyInputFormatTable",
+      "SELECT a, b FROM MyInputFormatTable",
       Seq(
-        row(1, "5.10", "1", "1"),
-        row(2, "6.10", "12", "12"),
-        row(3, "7.10", "123", "123"))
+        row(1, "5.10"),
+        row(2, "6.10"),
+        row(3, "7.10"))
     )
   }
 }
