@@ -1,6 +1,7 @@
 package org.apache.flink.table.tpc
 
-import org.apache.flink.table.api.config.OptimizerConfigOptions
+import org.apache.flink.streaming.api.transformations.ShuffleMode
+import org.apache.flink.table.api.config.{ExecutionConfigOptions, OptimizerConfigOptions}
 import org.apache.flink.table.planner.runtime.utils.BatchTestBase
 import org.apache.flink.table.runtime.types.TypeInfoDataTypeConverter
 import org.apache.flink.table.sources.{CsvTableSource, CsvTableSource2}
@@ -26,7 +27,7 @@ class TpcDsBatchExecITCase(
   val csvDataDir = "/tpcds/data"
 
   def getDataFile(tableName: String): String =
-    "/Users/pingyong.xpy/workspace/ideaProject/csv_data/" + tableName
+    "/Users/pingyong.xpy/workspace/ideaProject/csv_data/" + tableName + ".dat"
 
   def getResultFile: String = s"/tpcds/result/$factor/$caseName"
 
@@ -52,6 +53,8 @@ class TpcDsBatchExecITCase(
     tEnv.getConfig.getConfiguration.setBoolean(OptimizerConfigOptions.SQL_OPTIMIZER_REUSE_SUB_PLAN_ENABLED, true)
     tEnv.getConfig.getConfiguration.setBoolean(
       OptimizerConfigOptions.SQL_OPTIMIZER_REUSE_TABLE_SOURCE_ENABLED, false)
+    conf.getConfiguration.setString(ExecutionConfigOptions.SQL_EXEC_SHUFFLE_MODE,
+      ShuffleMode.BATCH.toString)
    // TpcUtils.disableBroadcastHashJoin(tEnv)
   }
 
@@ -84,7 +87,8 @@ object TpcDsBatchExecITCase {
 
       // "q90" // Error will thrown because divide by 0
       // FIXME: Array("q78", true) will block
-      Array("q1", false)//, Array("q2", false), Array("q3", false), Array("q4", false),
+      Array("q14a", false)
+//      Array("q1", false), Array("q2", false), Array("q3", false), Array("q4", false),
 //      Array("q5", false), Array("q6", true), Array("q7", false), Array("q8", false),
 //      Array("q9", false), Array("q10", false), Array("q11", false), Array("q12", false),
 //      Array("q13", false), Array("q14a", false), Array("q14b", false), Array("q15", false),
