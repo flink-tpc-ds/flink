@@ -56,6 +56,7 @@ import org.apache.flink.streaming.runtime.partitioner.StreamPartitioner;
 import org.apache.flink.streaming.runtime.tasks.StreamIterationHead;
 import org.apache.flink.streaming.runtime.tasks.StreamIterationTail;
 import org.apache.flink.util.FlinkRuntimeException;
+import org.apache.flink.util.Preconditions;
 import org.apache.flink.util.SerializedValue;
 
 import org.apache.commons.lang3.StringUtils;
@@ -174,6 +175,12 @@ public class StreamingJobGraphGenerator {
 			throw new IllegalConfigurationException("Could not serialize the ExecutionConfig." +
 					"This indicates that non-serializable types (like custom serializers) were registered");
 		}
+
+		jobGraph.getVertices().forEach(v -> {
+			v.getInputs().forEach(i -> {
+				Preconditions.checkArgument(i.getSource().getResultType() == ResultPartitionType.BLOCKING);
+			});
+		});
 
 		return jobGraph;
 	}

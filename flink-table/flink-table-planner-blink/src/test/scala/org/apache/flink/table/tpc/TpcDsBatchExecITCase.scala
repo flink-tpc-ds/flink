@@ -115,23 +115,12 @@ object TpcDsBatchExecITCase {
 //      Array("q94", false), Array("q95", false), Array("q96", false), Array("q97", false),
 //      Array("q98", false), Array("q99", false)
 
-      Array("q47", false),
-      Array("q57", false),
-      Array("q67", false), // hashjoin
-      Array("q14a", false), Array("q14b", false),
-      Array("q16", false),
-      Array("q23a", false),
-      Array("q23b", false), Array("q33", false),
-      Array("q36", false), Array("q49", false), Array("q86", false), // codegen
-      Array("q41", false),
-       Array("q56", true),
-      Array("q58", false), Array("q60", false),
+     // Array("q14a", false), Array("q14b", false),
+      Array("q36", false), Array("q49", false), Array("q86", false) // codegen
+//
+//      Array("q70", false),
+//      Array("q85", false),
 
-      Array("q69", false), Array("q70", false),
-      Array("q83", false),
-      Array("q85", false),
-
-      Array("q94", false), Array("q95", false)
     ).map(a => Array(a.head, factor, a.last))
   }
 }

@@ -278,7 +278,9 @@ class ExprCodeGenerator(ctx: CodeGeneratorContext, nullableInput: Boolean)
             s"Incompatible types of expression and result type, Expression[$fieldExpr] type is " +
               s"[${fieldExpr.resultType}], result type is [${returnType.getTypeAt(i)}]")
         }
-      case (fieldExpr, i) if !isInteroperable(fieldExpr.resultType, returnType.getTypeAt(i)) =>
+      case (fieldExpr, i) =>
+        System.out.println(fieldExpr.resultType + " ===== " + returnType.getTypeAt(i))
+        if (!isInteroperable(fieldExpr.resultType, returnType.getTypeAt(i)))
         throw new CodeGenException(
           s"Incompatible types of expression and result type. Expression[$fieldExpr] type is " +
             s"[${fieldExpr.resultType}], result type is [${returnType.getTypeAt(i)}]")

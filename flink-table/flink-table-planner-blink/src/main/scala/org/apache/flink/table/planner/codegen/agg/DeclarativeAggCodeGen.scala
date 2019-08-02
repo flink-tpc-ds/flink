@@ -75,8 +75,9 @@ class DeclarativeAggCodeGen(
   private val rexNodeGen = new RexNodeConverter(relBuilder)
 
   def createAccumulator(generator: ExprCodeGenerator): Seq[GeneratedExpression] = {
-    function.initialValuesExpressions
+    val x = function.initialValuesExpressions
       .map(expr => generator.generateExpression(expr.accept(rexNodeGen)))
+    x
   }
 
   def setAccumulator(generator: ExprCodeGenerator): String = {

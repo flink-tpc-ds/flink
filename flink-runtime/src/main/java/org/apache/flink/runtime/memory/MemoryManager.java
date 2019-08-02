@@ -125,6 +125,7 @@ public class MemoryManager {
 	 */
 	public MemoryManager(long memorySize, int numberOfSlots, int pageSize,
 							MemoryType memoryType, boolean preAllocateMemory) {
+		System.out.println("memorySize: " + memorySize);
 		// sanity checks
 		if (memoryType == null) {
 			throw new NullPointerException();
