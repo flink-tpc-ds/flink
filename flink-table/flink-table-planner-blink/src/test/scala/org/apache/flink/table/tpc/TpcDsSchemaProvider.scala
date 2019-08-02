@@ -23,6 +23,7 @@ import org.apache.flink.table.types.DataType
 
 import com.google.common.collect.ImmutableSet
 
+import java.sql.Date
 import java.util
 
 case class Column(
@@ -256,8 +257,8 @@ object CallCenter extends TpcDsSchema {
   override val columns = Array[Column](
     Column("cc_call_center_sk", 0, DataTypes.BIGINT, false, true),
     Column("cc_call_center_id", 1, DataTypes.STRING, false, false),
-    Column("cc_rec_start_date", 2, DataTypes.DATE, true, false),
-    Column("cc_rec_end_date", 3, DataTypes.DATE, true, false),
+    Column("cc_rec_start_date", 2, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
+    Column("cc_rec_end_date", 3, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
     Column("cc_closed_date_sk", 4, DataTypes.BIGINT, true, false),
     Column("cc_open_date_sk", 5, DataTypes.BIGINT, true, false),
     Column("cc_name", 6, DataTypes.STRING, true, false),
@@ -371,7 +372,7 @@ object DateDim extends TpcDsSchema {
   override val columns = Array[Column](
     Column("d_date_sk", 0, DataTypes.BIGINT, false, true),
     Column("d_date_id", 1, DataTypes.STRING, false, false),
-    Column("d_date", 2, DataTypes.DATE, true, false),
+    Column("d_date", 2, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
     Column("d_month_seq", 3, DataTypes.BIGINT, true, false),
     Column("d_week_seq", 4, DataTypes.BIGINT, true, false),
     Column("d_quarter_seq", 5, DataTypes.BIGINT, true, false),
@@ -426,8 +427,8 @@ object Item extends TpcDsSchema {
   override val columns = Array[Column](
     Column("i_item_sk", 0, DataTypes.BIGINT, false, true),
     Column("i_item_id", 1, DataTypes.STRING, false, false),
-    Column("i_rec_start_date", 2, DataTypes.DATE, true, false),
-    Column("i_rec_end_date", 3, DataTypes.DATE, true, false),
+    Column("i_rec_start_date", 2, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
+    Column("i_rec_end_date", 3, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
     Column("i_item_desc", 4, DataTypes.STRING, true, false),
     Column("i_current_price", 5, DataTypes.DECIMAL(7, 2), true, false),
     Column("i_wholesale_cost", 6, DataTypes.DECIMAL(7, 2), true, false),
@@ -505,8 +506,8 @@ object Store extends TpcDsSchema {
   override val columns = Array[Column](
     Column("s_store_sk", 0, DataTypes.BIGINT, false, true),
     Column("s_store_id", 1, DataTypes.STRING, false, false),
-    Column("s_rec_start_date", 2, DataTypes.DATE, true, false),
-    Column("s_rec_end_date", 3, DataTypes.DATE, true, false),
+    Column("s_rec_start_date", 2, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
+    Column("s_rec_end_date", 3, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
     Column("s_closed_date_sk", 4, DataTypes.BIGINT, true, false),
     Column("s_store_name", 5,  DataTypes.STRING, true, false),
     Column("s_number_employees", 6, DataTypes.BIGINT, true, false),
@@ -578,8 +579,8 @@ object WebPage extends TpcDsSchema {
   override val columns = Array[Column](
     Column("wp_web_page_sk", 0, DataTypes.BIGINT, false, true),
     Column("wp_web_page_id", 1, DataTypes.STRING, false, false),
-    Column("wp_rec_start_date", 2, DataTypes.DATE, true, false),
-    Column("wp_rec_end_date", 3, DataTypes.DATE, true, false),
+    Column("wp_rec_start_date", 2, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
+    Column("wp_rec_end_date", 3, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
     Column("wp_creation_date_sk", 4, DataTypes.BIGINT, true, false),
     Column("wp_access_date_sk", 5, DataTypes.BIGINT, true, false),
     Column("wp_autogen_flag", 6, DataTypes.STRING, true, false),
@@ -599,8 +600,8 @@ object WebSite extends TpcDsSchema {
   override val columns = Array[Column](
     Column("web_site_sk", 0, DataTypes.BIGINT, false, true),
     Column("web_site_id", 1, DataTypes.STRING, false, false),
-    Column("web_rec_start_date", 2, DataTypes.DATE, true, false),
-    Column("web_rec_end_date", 3, DataTypes.DATE, true, false),
+    Column("web_rec_start_date", 2, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
+    Column("web_rec_end_date", 3, DataTypes.DATE.bridgedTo(classOf[Date]), true, false),
     Column("web_name", 4, DataTypes.STRING, true, false),
     Column("web_open_date_sk", 5, DataTypes.BIGINT, true, false),
     Column("web_close_date_sk", 6, DataTypes.BIGINT, true, false),

@@ -115,24 +115,23 @@ object TpcDsBatchExecITCase {
 //      Array("q94", false), Array("q95", false), Array("q96", false), Array("q97", false),
 //      Array("q98", false), Array("q99", false)
 
-      Array("q5", false), Array("q12", false),
+      Array("q47", false),
+      Array("q57", false),
+      Array("q67", false), // hashjoin
       Array("q14a", false), Array("q14b", false),
       Array("q16", false),
-      Array("q20", false), Array("q21", false), Array("q23a", false),
-      Array("q23b", false), Array("q32", false), Array("q33", false),
-      Array("q36", false), Array("q37", false),
-      Array("q38", false), Array("q39a", false), Array("q39b", false), Array("q40", false),
-      Array("q41", false), Array("q43", false),
-      Array("q46", false), Array("q47", false),
-      Array("q49", false), Array("q51", false), Array("q56", true),
-      Array("q57", false), Array("q58", false), Array("q60", false),
-      Array("q62", false), Array("q67", false),
-      Array("q69", false), Array("q70", false), Array("q72", false),
-      Array("q77", true), Array("q80", false),
-      Array("q82", false), Array("q83", false),
-      Array("q85", false), Array("q86", false), Array("q87", false), Array("q92", false),
-      Array("q94", false), Array("q95", false),
-      Array("q98", false), Array("q99", false)
+      Array("q23a", false),
+      Array("q23b", false), Array("q33", false),
+      Array("q36", false), Array("q49", false), Array("q86", false), // codegen
+      Array("q41", false),
+       Array("q56", true),
+      Array("q58", false), Array("q60", false),
+
+      Array("q69", false), Array("q70", false),
+      Array("q83", false),
+      Array("q85", false),
+
+      Array("q94", false), Array("q95", false)
     ).map(a => Array(a.head, factor, a.last))
   }
 }
