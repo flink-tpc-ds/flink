@@ -85,41 +85,34 @@ object TpcDsBatchExecITCase {
     val factor = 1
     Seq[Array[Any]](
 
-      // "q90" // Error will thrown because divide by 0
       // FIXME: Array("q78", true) will block
-     // Array("q14a", false)
-//      Array("q1", false), Array("q2", false), Array("q3", false), Array("q4", false),
-//      Array("q5", false), Array("q6", true), Array("q7", false), Array("q8", false),
-//      Array("q9", false), Array("q10", false), Array("q11", false), Array("q12", false),
-//      Array("q13", false), Array("q14a", false), Array("q14b", false), Array("q15", false),
-//      Array("q16", false), Array("q17", false), Array("q18", false), Array("q19", false),
-//      Array("q20", false), Array("q21", false), Array("q22", false), Array("q23a", false),
-//      Array("q23b", false), Array("q24a", true), Array("q24b", false), Array("q25", false),
-//      Array("q26", false), Array("q27", false), Array("q28", false), Array("q29", false),
-//      Array("q30", false), Array("q31", false), Array("q32", false), Array("q33", false),
-//      Array("q34", false), Array("q35", false), Array("q36", false), Array("q37", false),
-//      Array("q38", false), Array("q39a", false), Array("q39b", false), Array("q40", false),
-//      Array("q41", false), Array("q42", false), Array("q43", false), Array("q44", false),
-//      Array("q45", false), Array("q46", false), Array("q47", false), Array("q48", false),
-//      Array("q49", false), Array("q50", false), Array("q51", false), Array("q52", false),
-//      Array("q53", false), Array("q54", false), Array("q55", false), Array("q56", true),
-//      Array("q57", false), Array("q58", false), Array("q59", false), Array("q60", false),
-//      Array("q61", false), Array("q62", false), Array("q63", false), Array("q64", true),
-//      Array("q65", false), Array("q66", false), Array("q67", false), Array("q68", false),
-//      Array("q69", false), Array("q70", false), Array("q71", true), Array("q72", false),
-//      Array("q73", false), Array("q74", false), Array("q75", true), Array("q76", false),
-//      Array("q77", true), Array("q79", true), Array("q80", false),
-//      Array("q81", false), Array("q82", false), Array("q83", false), Array("q84", false),
-//      Array("q85", false), Array("q86", false), Array("q87", false), Array("q88", false),
-//      Array("q89", false), Array("q91", false), Array("q92", false), Array("q93", false),
-//      Array("q94", false), Array("q95", false), Array("q96", false), Array("q97", false),
-//      Array("q98", false), Array("q99", false)
+      Array("q1", false), Array("q2", false), Array("q3", false), Array("q4", false),
+      Array("q5", false), Array("q6", true), Array("q7", false), Array("q8", false),
+      Array("q9", false), Array("q10", false), Array("q11", false), Array("q12", false),
+      Array("q13", false), Array("q14a", false), Array("q14b", false), Array("q15", false),
+      Array("q16", false), Array("q17", false), Array("q18", false), Array("q19", false),
+      Array("q20", false), Array("q21", false), Array("q22", false), Array("q23a", false),
+      Array("q23b", false), Array("q24a", true), Array("q24b", false), Array("q25", false),
+      Array("q26", false), Array("q27", false), Array("q28", false), Array("q29", false),
+      Array("q30", false), Array("q31", false), Array("q32", false), Array("q33", false),
+      Array("q34", false), Array("q35", false), Array("q36", false), Array("q37", false),
+      Array("q38", false), Array("q39a", false), Array("q39b", false), Array("q40", false),
+      Array("q41", false), Array("q42", false), Array("q43", false), Array("q44", false),
+      Array("q45", false), Array("q46", false), Array("q47", false), Array("q48", false),
+      Array("q49", false), Array("q50", false), Array("q51", false), Array("q52", false),
+      Array("q53", false), Array("q54", false), Array("q55", false), Array("q56", true),
+      Array("q57", false), Array("q58", false), Array("q59", false), Array("q60", false),
+      Array("q61", false), Array("q62", false), Array("q63", false), Array("q64", true),
+      Array("q65", false), Array("q66", false), Array("q67", false), Array("q68", false),
+      Array("q69", false), Array("q70", false), Array("q71", true), Array("q72", false),
+      Array("q73", false), Array("q74", false), Array("q75", true), Array("q76", false),
+      Array("q77", true), Array("q79", true), Array("q80", false),
+      Array("q81", false), Array("q82", false), Array("q83", false), Array("q84", false),
+      Array("q85", false), Array("q86", false), Array("q87", false), Array("q88", false),
+      Array("q89", false), Array("q91", false), Array("q92", false), Array("q93", false),
+      Array("q94", false), Array("q95", false), Array("q96", false), Array("q97", false),
+      Array("q98", false), Array("q99", false)
 
-     // Array("q14a", false), Array("q14b", false),
-      Array("q36", false), Array("q49", false), Array("q86", false) // codegen
-//
-//      Array("q70", false),
-//      Array("q85", false),
 
     ).map(a => Array(a.head, factor, a.last))
   }
