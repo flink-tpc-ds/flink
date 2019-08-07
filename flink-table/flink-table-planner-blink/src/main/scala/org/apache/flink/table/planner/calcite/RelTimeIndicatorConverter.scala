@@ -436,8 +436,11 @@ class RelTimeIndicatorConverter(rexBuilder: RexBuilder) extends RelShuttle {
       AggregateCall.create(
         call.getAggregation,
         call.isDistinct,
+        call.isApproximate,
+        call.ignoreNulls,
         call.getArgList,
         call.filterArg,
+        call.getCollation,
         callType,
         call.name)
     }
