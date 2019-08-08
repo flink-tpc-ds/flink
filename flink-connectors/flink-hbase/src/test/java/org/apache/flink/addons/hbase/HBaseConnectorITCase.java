@@ -38,7 +38,7 @@ import org.apache.flink.table.api.java.StreamTableEnvironment;
 import org.apache.flink.table.descriptors.DescriptorProperties;
 import org.apache.flink.table.factories.TableFactoryService;
 import org.apache.flink.table.functions.ScalarFunction;
-import org.apache.flink.table.planner.runtime.utils.TableUtil;
+import org.apache.flink.table.planner.runtime.utils.BatchTableEnvUtil;
 import org.apache.flink.table.planner.utils.JavaScalaConversionUtil;
 import org.apache.flink.table.runtime.utils.StreamITCase;
 import org.apache.flink.table.sinks.TableSink;
@@ -461,7 +461,7 @@ public class HBaseConnectorITCase extends HBaseTestBase {
 			DataSet<Row> resultSet = batchTableEnv.toDataSet(table, Row.class);
 			return resultSet.collect();
 		} else {
-			return JavaScalaConversionUtil.toJava(TableUtil.collect(tableImpl));
+			return JavaScalaConversionUtil.toJava(BatchTableEnvUtil.collect(tableImpl));
 		}
 	}
 
