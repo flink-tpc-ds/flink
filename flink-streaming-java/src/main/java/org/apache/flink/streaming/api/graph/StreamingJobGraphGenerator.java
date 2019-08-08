@@ -176,12 +176,6 @@ public class StreamingJobGraphGenerator {
 					"This indicates that non-serializable types (like custom serializers) were registered");
 		}
 
-		jobGraph.getVertices().forEach(v -> {
-			v.getInputs().forEach(i -> {
-				Preconditions.checkArgument(i.getSource().getResultType() == ResultPartitionType.BLOCKING);
-			});
-		});
-
 		return jobGraph;
 	}
 

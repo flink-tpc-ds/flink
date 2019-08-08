@@ -92,7 +92,8 @@ object StatisticGenerator extends Logging {
 
     val resultTable = tableEnv.sqlQuery(statsSql)
 
-    val results = CollectResultUtil.collect(tableEnv, resultTable, s"Analyze TableStats for $tableName")
+    val results = CollectResultUtil.collect(
+      tableEnv, resultTable, s"Analyze TableStats for $tableName")
     val result = results.get(0)
 
     val rowCount = result.getField(0).asInstanceOf[Long]

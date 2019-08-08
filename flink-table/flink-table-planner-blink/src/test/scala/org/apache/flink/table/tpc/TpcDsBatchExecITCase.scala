@@ -68,11 +68,13 @@ class TpcDsBatchExecITCase(
       tEnv.registerTableSource(tableName, tableSource)
 
     }
-    tEnv.getConfig.getConfiguration.setBoolean(OptimizerConfigOptions.SQL_OPTIMIZER_JOIN_REORDER_ENABLED, true)
-    tEnv.getConfig.getConfiguration.setBoolean(OptimizerConfigOptions.SQL_OPTIMIZER_REUSE_SUB_PLAN_ENABLED, true)
     tEnv.getConfig.getConfiguration.setBoolean(
-      OptimizerConfigOptions.SQL_OPTIMIZER_REUSE_TABLE_SOURCE_ENABLED, false)
-    conf.getConfiguration.setString(ExecutionConfigOptions.SQL_EXEC_SHUFFLE_MODE,
+      OptimizerConfigOptions.TABLE_OPTIMIZER_JOIN_REORDER_ENABLED, true)
+    tEnv.getConfig.getConfiguration.setBoolean(
+      OptimizerConfigOptions.TABLE_OPTIMIZER_REUSE_SUB_PLAN_ENABLED, true)
+    tEnv.getConfig.getConfiguration.setBoolean(
+      OptimizerConfigOptions.TABLE_OPTIMIZER_REUSE_SOURCE_ENABLED, false)
+    conf.getConfiguration.setString(ExecutionConfigOptions.TABLE_EXEC_SHUFFLE_MODE,
       ShuffleMode.BATCH.toString)
    // TpcUtils.disableBroadcastHashJoin(tEnv)
   }

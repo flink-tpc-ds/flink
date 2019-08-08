@@ -54,7 +54,8 @@ class TpcHBatchExecITCase(caseName: String) extends BatchTestBase {
       tEnv.registerTableSource(tableName, tableSource)
     }
 
-    tEnv.getConfig.getConfiguration.setInteger(ExecutionConfigOptions.SQL_EXEC_SORT_DEFAULT_LIMIT, -1)
+    tEnv.getConfig.getConfiguration.setInteger(
+      ExecutionConfigOptions.TABLE_EXEC_SORT_DEFAULT_LIMIT, -1)
     /*TpcUtils.disableRangeSort(tEnv)*/
   }
 

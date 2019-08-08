@@ -38,15 +38,14 @@ import org.apache.calcite.util.ImmutableBitSet;
 import org.apache.calcite.util.ImmutableIntList;
 import org.apache.calcite.util.Pair;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * This rules is copied from Calcite's {@link org.apache.calcite.rel.rules.JoinToMultiJoinRule}.
+ * This rule is copied from Calcite's {@link org.apache.calcite.rel.rules.JoinToMultiJoinRule}.
+ * This file should be removed while upgrading Calcite version to 1.21. [CALCITE-3225]
  * Modification:
  * - Does not match SEMI/ANTI join. lines changed (142-145)
  * - lines changed (440-451)
@@ -137,7 +136,6 @@ public class FlinkJoinToMultiJoinRule extends RelOptRule {
 
 	//~ Methods ----------------------------------------------------------------
 
-
 	@Override
 	public boolean matches(RelOptRuleCall call) {
 		final Join origJoin = call.rel(0);
@@ -179,7 +177,7 @@ public class FlinkJoinToMultiJoinRule extends RelOptRule {
 
 		// add on the join field reference counts for the join condition
 		// associated with this LogicalJoin
-		final ImmutableMap<Integer, ImmutableIntList> newJoinFieldRefCountsMap =
+		final com.google.common.collect.ImmutableMap<Integer, ImmutableIntList> newJoinFieldRefCountsMap =
 				addOnJoinFieldRefCounts(newInputs,
 						origJoin.getRowType().getFieldCount(),
 						origJoin.getCondition(),
@@ -391,7 +389,7 @@ public class FlinkJoinToMultiJoinRule extends RelOptRule {
 	 * Combines the join filters from the left and right inputs (if they are
 	 * MultiJoinRels) with the join filter in the joinrel into a single AND'd
 	 * join filter, unless the inputs correspond to null generating inputs in an
-	 * outer join
+	 * outer join.
 	 *
 	 * @param joinRel join rel
 	 * @param left    left child of the join
@@ -497,7 +495,7 @@ public class FlinkJoinToMultiJoinRule extends RelOptRule {
 	 *
 	 * @return Map containing the new join condition
 	 */
-	private ImmutableMap<Integer, ImmutableIntList> addOnJoinFieldRefCounts(
+	private com.google.common.collect.ImmutableMap<Integer, ImmutableIntList> addOnJoinFieldRefCounts(
 			List<RelNode> multiJoinInputs,
 			int nTotalFields,
 			RexNode joinCondition,
@@ -537,8 +535,8 @@ public class FlinkJoinToMultiJoinRule extends RelOptRule {
 			refCounts[i - startField] += joinCondRefCounts[i];
 		}
 
-		final ImmutableMap.Builder<Integer, ImmutableIntList> builder =
-				ImmutableMap.builder();
+		final com.google.common.collect.ImmutableMap.Builder<Integer, ImmutableIntList> builder =
+				com.google.common.collect.ImmutableMap.builder();
 		for (Map.Entry<Integer, int[]> entry : refCountsMap.entrySet()) {
 			builder.put(entry.getKey(), ImmutableIntList.of(entry.getValue()));
 		}
