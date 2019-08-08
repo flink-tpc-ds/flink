@@ -76,15 +76,9 @@ trait Schema {
 
   def getFieldTypes: Array[DataType]
 
-  def getFieldNullables: Array[Boolean]
-
   def getUniqueKeys: util.Set[util.Set[String]] = null
 }
 
 trait TpchSchema extends Schema {
 
-  /**
-    * Each column is not nullable for each tpch table based on TPCH Documents.
-    */
-  override def getFieldNullables: Array[Boolean] = getFieldNames.map(_ => false)
 }

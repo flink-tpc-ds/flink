@@ -28,10 +28,8 @@ import org.apache.flink.core.fs.Path;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.DataTypes;
-import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.types.DataType;
-import org.apache.flink.table.types.logical.RowType;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
 
@@ -41,15 +39,12 @@ import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import static org.apache.flink.table.types.utils.TypeConversions.fromLegacyInfoToDataType;
-
 /**
  * A {@link StreamTableSource} and {@link BatchTableSource} for simple CSV files with a
  * (logically) unlimited number of fields.
  */
 public class CsvTableSource2
-		implements StreamTableSource<Row>, BatchTableSource<Row>,
-		           ProjectableTableSource<Row> {
+		implements StreamTableSource<Row>, BatchTableSource<Row>, ProjectableTableSource<Row> {
 
 	private final CsvInputFormatConfig config;
 
