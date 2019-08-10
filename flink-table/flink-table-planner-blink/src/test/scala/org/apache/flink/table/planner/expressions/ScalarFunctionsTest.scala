@@ -22,7 +22,6 @@ import org.apache.flink.table.api.scala.{currentDate, currentTime, currentTimest
 import org.apache.flink.table.api.{DataTypes, Types}
 import org.apache.flink.table.expressions.{Expression, ExpressionParser, TimeIntervalUnit, TimePointUnit}
 import org.apache.flink.table.planner.expressions.utils.ScalarTypesTestBase
-
 import org.junit.Test
 
 class ScalarFunctionsTest extends ScalarTypesTestBase {
@@ -3472,26 +3471,25 @@ class ScalarFunctionsTest extends ScalarTypesTestBase {
       "timestampadd(DAY, 1, date '2016-06-15')",
       "2016-06-16")
 
-    // TODO support '2016-06-15'.toTimestamp
-//    testAllApis("2016-06-15".toTimestamp - 1.hour,
-//      "'2016-06-15'.toTimestamp - 1.hour",
-//      "timestampadd(HOUR, -1, date '2016-06-15')",
-//      "2016-06-14 23:00:00.0")
+    testAllApis("2016-06-15".toTimestamp - 1.hour,
+      "'2016-06-15'.toTimestamp - 1.hour",
+      "timestampadd(HOUR, -1, date '2016-06-15')",
+      "2016-06-14 23:00:00.000")
 
-//    testAllApis("2016-06-15".toTimestamp + 1.minute,
-//      "'2016-06-15'.toTimestamp + 1.minute",
-//      "timestampadd(MINUTE, 1, date '2016-06-15')",
-//      "2016-06-15 00:01:00.0")
+    testAllApis("2016-06-15".toTimestamp + 1.minute,
+      "'2016-06-15'.toTimestamp + 1.minute",
+      "timestampadd(MINUTE, 1, date '2016-06-15')",
+      "2016-06-15 00:01:00.000")
 
-//    testAllApis("2016-06-15".toTimestamp - 1.second,
-//      "'2016-06-15'.toTimestamp - 1.second",
-//      "timestampadd(SQL_TSI_SECOND, -1, date '2016-06-15')",
-//      "2016-06-14 23:59:59.0")
+    testAllApis("2016-06-15".toTimestamp - 1.second,
+      "'2016-06-15'.toTimestamp - 1.second",
+      "timestampadd(SQL_TSI_SECOND, -1, date '2016-06-15')",
+      "2016-06-14 23:59:59.000")
 
-//    testAllApis("2016-06-15".toTimestamp + 1.second,
-//      "'2016-06-15'.toTimestamp + 1.second",
-//      "timestampadd(SECOND, 1, date '2016-06-15')",
-//      "2016-06-15 00:00:01.0")
+    testAllApis("2016-06-15".toTimestamp + 1.second,
+      "'2016-06-15'.toTimestamp + 1.second",
+      "timestampadd(SECOND, 1, date '2016-06-15')",
+      "2016-06-15 00:00:01.000")
 
     testAllApis(nullOf(Types.SQL_TIMESTAMP) + 1.second,
       "nullOf(SQL_TIMESTAMP) + 1.second",
@@ -3528,38 +3526,16 @@ class ScalarFunctionsTest extends ScalarTypesTestBase {
   @Test
   def testToTimestamp(): Unit = {
     testSqlApi("to_timestamp('abc')", "null")
-    testSqlApi("to_timestamp(1513135677000)", "2017-12-13 03:27:57.000")
     testSqlApi("to_timestamp('2017-09-15 00:00:00')", "2017-09-15 00:00:00.000")
     testSqlApi("to_timestamp('20170915000000', 'yyyyMMddHHmmss')", "2017-09-15 00:00:00.000")
+    testSqlApi("to_timestamp('2017-09-15', 'yyyy-MM-dd')", "2017-09-15 00:00:00.000")
+    // test with null input
+    testSqlApi("to_timestamp(cast(null as varchar))", "null")
   }
 
   @Test
   def testToDate(): Unit = {
     testSqlApi("to_date('2017-09-15 00:00:00')", "2017-09-15")
-  }
-
-  @Test
-  def testDateSub(): Unit = {
-    testSqlApi("date_sub(f18, 10)", "1996-10-31")
-    testSqlApi("date_sub(f18, -10)", "1996-11-20")
-    testSqlApi("date_sub(TIMESTAMP '2017-10-15 23:00:00', 30)", "2017-09-15")
-    testSqlApi("date_sub(f40, 30)", "null")
-    testSqlApi("date_sub(CAST(NULL AS TIMESTAMP), 30)", "null")
-    testSqlApi("date_sub(CAST(NULL AS VARCHAR), 30)", "null")
-    testSqlApi("date_sub('2017-10--11', 30)", "null")
-    testSqlApi("date_sub('2017--10-11', 30)", "null")
-  }
-
-  @Test
-  def testDateAdd(): Unit = {
-    testSqlApi("date_add(f18, 10)", "1996-11-20")
-    testSqlApi("date_add(f18, -10)", "1996-10-31")
-    testSqlApi("date_add(TIMESTAMP '2017-10-15 23:00:00', 30)", "2017-11-14")
-    testSqlApi("date_add(f40, 30)", "null")
-    testSqlApi("date_add(CAST(NULL AS TIMESTAMP), 30)", "null")
-    testSqlApi("date_add(CAST(NULL AS VARCHAR), 30)", "null")
-    testSqlApi("date_add('2017-10--11', 30)", "null")
-    testSqlApi("date_add('2017--10-11', 30)", "null")
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -3986,68 +3962,6 @@ class ScalarFunctionsTest extends ScalarTypesTestBase {
     testSqlApi(
       "IF(f7 < 5, f18, f52)",
       "1996-11-10 06:55:44.333")
-  }
-
-  @Test
-  def testToTimestampWithNumeric(): Unit = {
-    // Test integral and fractional numeric to timestamp.
-    testSqlApi(
-      "to_timestamp(f2)",
-      "1970-01-01 00:00:00.042")
-    testSqlApi(
-      "to_timestamp(f3)",
-      "1970-01-01 00:00:00.043")
-    testSqlApi(
-      "to_timestamp(f4)",
-      "1970-01-01 00:00:00.044")
-    testSqlApi(
-      "to_timestamp(f5)",
-      "1970-01-01 00:00:00.004")
-    testSqlApi(
-      "to_timestamp(f6)",
-      "1970-01-01 00:00:00.004")
-    testSqlApi(
-      "to_timestamp(f7)",
-      "1970-01-01 00:00:00.003")
-    // Test decimal to timestamp.
-    testSqlApi(
-      "to_timestamp(f15)",
-      "1969-12-31 23:59:58.769")
-    // test with null input
-    testSqlApi(
-      "to_timestamp(cast(null as varchar))",
-      "null")
-  }
-
-  @Test
-  def testFromUnixTimeWithNumeric(): Unit = {
-    // Test integral and fractional numeric from_unixtime.
-    testSqlApi(
-      "from_unixtime(f2)",
-      "1970-01-01 00:00:42")
-    testSqlApi(
-      "from_unixtime(f3)",
-      "1970-01-01 00:00:43")
-    testSqlApi(
-      "from_unixtime(f4)",
-      "1970-01-01 00:00:44")
-    testSqlApi(
-      "from_unixtime(f5)",
-      "1970-01-01 00:00:04")
-    testSqlApi(
-      "from_unixtime(f6)",
-      "1970-01-01 00:00:04")
-    testSqlApi(
-      "from_unixtime(f7)",
-      "1970-01-01 00:00:03")
-    // Test decimal to from_unixtime.
-    testSqlApi(
-      "from_unixtime(f15)",
-      "1969-12-31 23:39:29")
-    // test with null input
-    testSqlApi(
-      "from_unixtime(cast(null as int))",
-      "null")
   }
 
   @Test

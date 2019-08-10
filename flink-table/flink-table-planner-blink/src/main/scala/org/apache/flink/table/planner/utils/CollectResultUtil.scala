@@ -20,9 +20,11 @@ package org.apache.flink.table.planner.utils
 
 import org.apache.flink.api.common.accumulators.SerializedListAccumulator
 import org.apache.flink.api.common.typeinfo.TypeInformation
-import org.apache.flink.table.api.internal.TableEnvironmentImpl
-import org.apache.flink.table.api.{Table, TableEnvironment}
-import org.apache.flink.table.planner.delegation.PlannerBase
+
+import org.apache.flink.table.api.{Table, TableException}
+import org.apache.flink.table.api.internal.{TableEnvironmentImpl, TableImpl}
+import org.apache.flink.table.planner.delegation.{PlannerBase, StreamPlanner}
+
 import org.apache.flink.table.planner.sinks.{CollectRowTableSink, CollectTableSink}
 import org.apache.flink.table.runtime.types.TypeInfoLogicalTypeConverter
 import org.apache.flink.table.types.utils.TypeConversions.fromDataTypeToLegacyInfo
@@ -33,30 +35,67 @@ import java.util.{UUID, ArrayList => JArrayList, List => JList}
 
 object CollectResultUtil {
 
-  def collect(tEnv: TableEnvironment, table: Table, jobName: String): JList[Row] = {
+  /**
+    * Returns an collection that contains all rows in this Table.
+    */
+  def collect(table: Table): JList[Row] = {
+    collect(table, null)
+  }
+
+  /**
+    * Returns an collection that contains all rows in this Table.
+    */
+  def collect(table: Table, jobName: String): JList[Row] = {
+    collectSink(table, new CollectRowTableSink, Option.apply(jobName))
+  }
+
+  /**
+    * Returns an collection as expected type that contains all rows in this Table.
+    */
+  def collectAsT[T](table: Table, t: TypeInformation[_]): JList[T] = {
+    collectAsT(table, t, null)
+  }
+
+  /**
+    * Returns an collection as expected type that contains all rows in this Table.
+    */
+  def collectAsT[T](table: Table, t: TypeInformation[_], jobName: String): JList[T] = {
+    val sink = new CollectTableSink(_ => t.asInstanceOf[TypeInformation[T]])
+    collectSink(table, sink, Option.apply(jobName))
+  }
+
+  def collectSink[T](
+      table: Table, sink: CollectTableSink[T], jobName: Option[String]): JList[T] = {
     val schema = table.getSchema
     val fieldNames = schema.getFieldNames
     val fieldTypes = schema.getFieldDataTypes.map {
       t => TypeInfoLogicalTypeConverter.fromLogicalTypeToTypeInfo(t.getLogicalType)
     }
 
-    val sink = new CollectRowTableSink()
-      .configure(fieldNames, fieldTypes)
-      .asInstanceOf[CollectTableSink[Row]]
+    val configuredSink = sink.configure(fieldNames, fieldTypes).asInstanceOf[CollectTableSink[T]]
+    collectConfiguredSink(table, configuredSink, jobName)
+  }
 
-    val execConfig = tEnv.asInstanceOf[TableEnvironmentImpl]
-      .getPlanner.asInstanceOf[PlannerBase].getExecEnv.getConfig
-    val typeSerializer = fromDataTypeToLegacyInfo(sink.getConsumedDataType)
-      .asInstanceOf[TypeInformation[Row]]
+  private[flink] def collectConfiguredSink[T](
+      table: Table, configuredSink: CollectTableSink[T], jobName: Option[String]): JList[T] = {
+    val tEnv = table.asInstanceOf[TableImpl].getTableEnvironment.asInstanceOf[TableEnvironmentImpl]
+    if (tEnv.getPlanner.isInstanceOf[StreamPlanner]) {
+      throw new TableException("Stream job is not supported yet")
+    }
+
+    val execConfig = tEnv.getPlanner.asInstanceOf[PlannerBase].getExecEnv.getConfig
+    val typeSerializer = fromDataTypeToLegacyInfo(configuredSink.getConsumedDataType)
+      .asInstanceOf[TypeInformation[T]]
       .createSerializer(execConfig)
 
     val id = new AbstractID().toString
-    sink.init(typeSerializer, id)
+    configuredSink.init(typeSerializer, id)
+
     val sinkName = UUID.randomUUID().toString
-    tEnv.registerTableSink(sinkName, sink)
+    tEnv.registerTableSink(sinkName, configuredSink)
     tEnv.insertInto(table, sinkName)
 
-    val res = tEnv.execute(jobName)
+    val res = tEnv.execute(jobName.getOrElse("Flink Job"))
     val accResult: JArrayList[Array[Byte]] = res.getAccumulatorResult(id)
     SerializedListAccumulator.deserializeList(accResult, typeSerializer)
   }

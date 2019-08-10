@@ -28,7 +28,11 @@ import org.apache.flink.table.runtime.types.LogicalTypeDataTypeConverter.fromDat
 import org.apache.flink.table.types.logical.DecimalType
 import org.apache.flink.table.types.logical.LogicalTypeRoot._
 
+import org.apache.flink.types.Row
+
 import org.apache.calcite.avatica.util.Quoting
+
+import java.util.{List => JList}
 
 import scala.collection.JavaConverters._
 
@@ -58,10 +62,17 @@ object StatisticGenerator extends Logging {
       fieldsToAnalyze: Option[Array[String]] = None): TableStats = {
     require(tablePath != null && tablePath.nonEmpty, "tablePath must not be null or empty.")
 
-    val tableName = tablePath.mkString(".")
-    val table = tableEnv.scan(tablePath: _*)
 
-    val schema = table.getSchema
+    val planner = getPlanner(tableEnv)
+    if (planner.isInstanceOf[StreamPlanner]) {
+      throw new TableException("Streaming is not supported.")
+    }
+
+    val tableName = tablePath.mkString(".")
+    val sourceTable = tableEnv.scan(tablePath: _*)
+
+    val schema = sourceTable.getSchema
+
     val allFieldNames = schema.getFieldNames
 
     val selectedFields = fieldsToAnalyze match {
@@ -76,7 +87,8 @@ object StatisticGenerator extends Logging {
       case _ => allFieldNames
     }
 
-    val quoting = getPlanner(tableEnv).createFlinkPlanner.parserConfig.quoting()
+
+    val quoting = planner.createFlinkPlanner.parserConfig.quoting()
     val tableNameWithQuoting = tablePath.map(withQuoting(_, quoting)).mkString(".")
     val rowCountStats = "CAST(COUNT(1) AS BIGINT)"
     val statsSql = if (selectedFields.nonEmpty) {
@@ -90,10 +102,9 @@ object StatisticGenerator extends Logging {
       LOG.debug(s"Analyze TableStats for $tableName, SQL: $statsSql")
     }
 
-    val resultTable = tableEnv.sqlQuery(statsSql)
 
-    val results = CollectResultUtil.collect(
-      tableEnv, resultTable, s"Analyze TableStats for $tableName")
+    val table = tableEnv.sqlQuery(statsSql)
+    val results: JList[Row] = CollectResultUtil.collect(table, s"Analyze TableStats for $tableName")
     val result = results.get(0)
 
     val rowCount = result.getField(0).asInstanceOf[Long]
@@ -128,8 +139,7 @@ object StatisticGenerator extends Logging {
       quoting: Quoting): String = {
     require(fieldsToAnalyze.nonEmpty)
 
-    val planner = getPlanner(tableEnv)
-    val isStreamingMode = planner.isInstanceOf[StreamPlanner]
+
     val allFieldNames = schema.getFieldNames
     // is all fields support APPROX_COUNT_DISTINCT
     val allFieldsSupportApproxCountDistinct = fieldsToAnalyze.forall { field =>
@@ -142,10 +152,12 @@ object StatisticGenerator extends Logging {
       }
     }
 
+
+    val typeFactory = getPlanner(tableEnv).getTypeFactory
     val columnStatsSelects = fieldsToAnalyze.map { field =>
       val fieldIndex = allFieldNames.indexOf(field)
       val fieldType = fromDataTypeToLogicalType(schema.getFieldDataTypes()(fieldIndex))
-      val relDataType =  planner.getTypeFactory.createFieldTypeFromLogicalType(fieldType)
+      val relDataType = typeFactory.createFieldTypeFromLogicalType(fieldType)
       val (isNumberType, sqlTypeName) = fieldType.getTypeRoot match {
         case TINYINT | SMALLINT | INTEGER | BIGINT | FLOAT | DOUBLE | DECIMAL =>
           val sqlTypeName = if (fieldType.getTypeRoot == DECIMAL) {
@@ -163,9 +175,9 @@ object StatisticGenerator extends Logging {
 
       // Adds CAST here to make sure that the result values are expected types
       val columnNameWithQuoting = withQuoting(field, quoting)
-      // Currently, APPROX_COUNT_DISTINCT is not supported on streaming, and
-      // APPROX_COUNT_DISTINCT and COUNT DISTINCT cannot be used in the same query.
-      val computeNdv = if (!isStreamingMode && allFieldsSupportApproxCountDistinct) {
+
+      // Currently, APPROX_COUNT_DISTINCT and COUNT DISTINCT cannot be used in the same query.
+      val computeNdv = if (allFieldsSupportApproxCountDistinct) {
         s"CAST(APPROX_COUNT_DISTINCT($columnNameWithQuoting) AS BIGINT)"
       } else {
         s"CAST(COUNT(DISTINCT $columnNameWithQuoting) AS BIGINT)"
