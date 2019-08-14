@@ -82,7 +82,7 @@ public class ParquetVectorizedReader extends RecordReader<Void, Object> {
 	private long totalCountLoadedSoFar;
 	protected ParquetFileReader reader;
 	private AbstractHeapVector[] columnVectors;
-	private VectorizedColumnBatch columnarBatch;
+	VectorizedColumnBatch columnarBatch;
 	protected LogicalType[] fieldTypes;
 	protected String[] fieldNames;
 
@@ -223,7 +223,7 @@ public class ParquetVectorizedReader extends RecordReader<Void, Object> {
 	/**
 	 * Advances to the next batch of rows. Returns false if there are no more.
 	 */
-	private boolean nextBatch() throws IOException {
+	public boolean nextBatch() throws IOException {
 		columnarBatch.reset();
 		if (rowsReturned >= totalRowCount) {
 			return false;
