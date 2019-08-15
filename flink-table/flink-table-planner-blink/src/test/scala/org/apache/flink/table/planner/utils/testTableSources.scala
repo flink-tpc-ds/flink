@@ -22,11 +22,7 @@ import org.apache.flink.api.common.ExecutionConfig
 import org.apache.flink.api.common.io.InputFormat
 import org.apache.flink.api.common.typeinfo.{BasicTypeInfo, TypeInformation}
 import org.apache.flink.api.common.typeutils.TypeSerializer
-<<<<<<< HEAD
 import org.apache.flink.api.java.io.{CollectionInputFormat, CsvInputFormat}
-=======
-import org.apache.flink.api.java.io.CollectionInputFormat
->>>>>>> 5b90b16... [FLINK-13495][table-planner-blink] Add table source and table sink it case using varchar/char/decimal precision
 import org.apache.flink.api.java.typeutils.RowTypeInfo
 import org.apache.flink.core.io.InputSplit
 import org.apache.flink.streaming.api.datastream.DataStream
@@ -39,10 +35,7 @@ import org.apache.flink.table.functions.BuiltInFunctionDefinitions.AND
 import org.apache.flink.table.planner.runtime.utils.BatchTestBase.row
 import org.apache.flink.table.planner.runtime.utils.TimeTestUtil.EventTimeSourceFunction
 import org.apache.flink.table.runtime.types.TypeInfoDataTypeConverter.fromDataTypeToTypeInfo
-<<<<<<< HEAD
 import org.apache.flink.table.runtime.types.TypeInfoLogicalTypeConverter.fromLogicalTypeToTypeInfo
-=======
->>>>>>> 5b90b16... [FLINK-13495][table-planner-blink] Add table source and table sink it case using varchar/char/decimal precision
 import org.apache.flink.table.sources._
 import org.apache.flink.table.sources.tsextractors.ExistingField
 import org.apache.flink.table.sources.wmstrategies.{AscendingTimestamps, PreserveWatermarks}
@@ -50,7 +43,6 @@ import org.apache.flink.table.types.DataType
 import org.apache.flink.table.types.logical.LogicalType
 import org.apache.flink.table.types.utils.TypeConversions.fromLegacyInfoToDataType
 import org.apache.flink.types.Row
-
 import org.apache.calcite.avatica.util.DateTimeUtils
 
 import java.io.{File, FileOutputStream, OutputStreamWriter}
@@ -688,6 +680,5 @@ class TestStreamTableSource(
   }
 
   override def getReturnType: TypeInformation[Row] = tableSchema.toRowType
-
   override def getTableSchema: TableSchema = tableSchema
 }
