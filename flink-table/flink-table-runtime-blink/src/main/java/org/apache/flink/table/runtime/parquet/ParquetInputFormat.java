@@ -45,6 +45,9 @@ import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.schema.MessageType;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -102,7 +105,6 @@ public abstract class ParquetInputFormat<T, R> extends FileInputFormat<T> {
 
 	@Override
 	public void open(FileInputSplit fileSplit) throws IOException {
-
 		// init and register file system
 		Configuration hadoopConf = new Configuration();
 
