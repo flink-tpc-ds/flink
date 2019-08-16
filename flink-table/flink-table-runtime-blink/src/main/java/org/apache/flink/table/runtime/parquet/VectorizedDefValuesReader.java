@@ -335,7 +335,7 @@ public final class VectorizedDefValuesReader extends VectorizedRleValuesReaderBa
 						data.readIntegers(n, c, rowId);
 					} else {
 						for (int index = rowId; index < rowId + n; index++) {
-							c.setNullAt(index);
+							nulls.setNullAt(index);
 						}
 					}
 					break;
@@ -344,7 +344,7 @@ public final class VectorizedDefValuesReader extends VectorizedRleValuesReaderBa
 						if (currentBuffer[currentBufferIdx++] == level) {
 							c.vector[rowId + i] = data.readInteger();
 						} else {
-							c.setNullAt(rowId + i);
+							nulls.setNullAt(rowId + i);
 						}
 					}
 					break;
