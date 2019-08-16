@@ -65,8 +65,8 @@ class ParquetTableSink(
         }
     }
     new RowParquetOutputFormat(
-      dir, schema.getFieldDataTypes.map(fromDataTypeToLogicalType), schema.getFieldNames, compression,
-      blockSize, enableDictionary)
+      dir, schema.getFieldDataTypes.map(fromDataTypeToLogicalType),
+      schema.getFieldNames, compression, blockSize, enableDictionary)
   }
 
   override def configure(

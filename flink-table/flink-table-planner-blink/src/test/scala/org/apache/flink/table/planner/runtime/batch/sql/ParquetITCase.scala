@@ -36,7 +36,8 @@ class ParquetITCase extends BatchTestBase {
     val tempFile = Files.createTempFile("parquet-sink", "test")
     tempFile.toFile.deleteOnExit()
 
-    val sink = new ParquetTableSink(parquetTable1.getTableSchema, tempFile.toFile.getAbsolutePath, Some(WriteMode.OVERWRITE))
+    val sink = new ParquetTableSink(
+      parquetTable1.getTableSchema, tempFile.toFile.getAbsolutePath, Some(WriteMode.OVERWRITE))
     tEnv.registerTableSink("mySink", sink)
 
     tEnv.sqlUpdate("INSERT INTO mySink SELECT `first`, id, score, `last` FROM parquetTable1")
